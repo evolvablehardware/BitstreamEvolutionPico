@@ -6,3 +6,6 @@
 [submodule "firmwareMicropython/pico-ice-micropython"]
 	path = firmwareMicropython/pico-ice-micropython
 	url = https://github.com/tinyvision-ai-inc/pico-ice-micropython.git
+[submodule "tools/picotool"]
+	path = tools/picotool
+	url = git@github.com:raspberrypi/picotool.git
