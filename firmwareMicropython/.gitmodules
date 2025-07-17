@@ -1,0 +1,6 @@
+[submodule "lib/micropython"]
+	path = lib/micropython
+	url = https://github.com/micropython/micropython.git
+[submodule "lib/pico-ice-mpy-module"]
+	path = lib/pico-ice-mpy-module
+	url = https://github.com/BrooklynLJ/pico-ice-mpy-module-symlink.git
