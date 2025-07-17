@@ -3,6 +3,3 @@
 	url = https://github.com/tinyvision-ai-inc/pico-ice-sdk.git
 	branch = main
 
-[submodule "firmwareMicropython"]
-	path = firmwareMicropython
-	url = https://github.com/BrooklynLJ/pico-ice-micropython-symlink.git
