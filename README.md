@@ -10,14 +10,10 @@ cd lib/pico-ice-sdk && git submodule update --init
 cd lib/pico-sdk && git submodule update --init
 cd ../../../..
 
-cd tools/picotool 
+cd tools 
 export PICOTOOL_FETCH_FROM_GIT_PATH=$(pwd)
-mkdir build 
-cd build 
-cmake -DPICO_SDK_PATH=../../../lib/pico-ice-sdk/lib/pico-sdk ..
-make -j$(nproc)
 
-cd ../../..
+cd ../
 
 cd firmwareMicropython/pico-ice-micropython && git submodule update --init
 
