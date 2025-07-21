@@ -15,7 +15,7 @@ export PICOTOOL_FETCH_FROM_GIT_PATH=$(pwd)
 mkdir build 
 cd build 
 cmake -DPICO_SDK_PATH=../../../lib/pico-ice-sdk/lib/pico-sdk ..
-make
+make -j$(nproc)
 
 cd ../../..
 
