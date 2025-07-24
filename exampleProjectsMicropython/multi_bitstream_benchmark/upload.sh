@@ -7,4 +7,4 @@ mpremote fs cp up5k_riscv2.bin :
 mpremote fs cp up5k_riscv3.bin :
 mpremote fs cp up5k_riscv4.bin :
 mpremote fs cp up5k_riscv5.bin :
-mpremote fs cp main2.py :main.py
+mpremote fs cp main.py :main.py

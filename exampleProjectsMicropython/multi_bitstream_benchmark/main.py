@@ -1,20 +1,52 @@
 import sys
 from machine import Pin
+from machine import freq
 import ice
 import time
+import gc
 
+#slight overclock to saturate the bitbanged SPI
+freq(180_000_000)
 
 #Set RGB pins to High-Z state
 red_led = Pin(LED_R, Pin.IN)
 green_led = Pin(LED_G, Pin.IN)
 blue_led = Pin(LED_B, Pin.IN)
 
-fpga = ice.fpga(cdone=Pin(ICE_DONE), clock=Pin(ICE_CLK), creset=Pin(ICE_RST), cram_cs=Pin(ICE_SS), cram_mosi=Pin(ICE_SI), cram_sck=Pin(ICE_SCK), frequency=48)
-
+fpga = ice.fpga(cdone=Pin(ICE_DONE), 
+                clock=Pin(ICE_CLK), 
+                creset=Pin(ICE_RST), 
+                cram_cs=Pin(ICE_SS), 
+                cram_mosi=Pin(ICE_SI), 
+                cram_sck=Pin(ICE_SCK), 
+                frequency=48)
 
 print("Ready!")
 
 buffer = ""
+
+#implementation for testing
+@micropython.native
+def flash_and_time(filename, mem_log):
+    t0 = time.ticks_us()
+    f = open(filename, "rb")
+    try:
+        fpga.cram(f)
+        gc.collect()
+    finally:
+        f.close()
+    t1 = time.ticks_us()          
+    mem_after = gc.mem_free()
+    image_dur = time.ticks_diff(t1,t0)
+    mem_log.append((filename, mem_after))
+    return image_dur
+
+
+def flash_with_collection(filename):
+    with open(filename,"rb") as f:
+        fpga.cram(f)
+        gc.collect()
+        
 
 while True:
     char = sys.stdin.read(1)
@@ -25,38 +57,42 @@ while True:
         buffer = buffer.upper()
         
         if buffer in {"RAM", "R"}:
-            start_t = time.ticks_us()
-        
-            load_t = time.ticks_us()
-            load_dur = time.ticks_diff(load_t,start_t)
             fpga.start()
+            start_t = time.ticks_us()
+            mem_log = []
 
-            bram_test = open("bram_test.bin","br")
-            fpga.cram(bram_test)
-            image1_t = time.ticks_us()
-            image1_dur = time.ticks_diff(image1_t, load_t)
-            
-            dsp_test = open("dsp_test.bin","br")                        
-            fpga.cram(dsp_test)
-            image2_t = time.ticks_us()
-            image2_dur = time.ticks_diff(image2_t, image1_t)
-            
-            spram_test = open("spram_test.bin","br")
-            fpga.cram(spram_test)
-            image3_t = time.ticks_us()
-            image3_dur = time.ticks_diff(image3_t, image2_t)
-                        
-            up5k_riscv = open("up5k_riscv.bin","br")
-            fpga.cram(up5k_riscv)
-            image4_t = time.ticks_us()
-            image4_dur = time.ticks_diff(image4_t, image3_t)
-            
+            # --- BRAM ---
+            image1_dur = flash_and_time("bram_test.bin",mem_log)
+
+
+            # --- DSP ---
+            image2_dur = flash_and_time("dsp_test.bin",mem_log)
+
+            # --- SPRAM ---
+            image3_dur = flash_and_time("spram_test.bin",mem_log)
+
+            # --- RISC-V repeated 5 times ---
+            riscv_times = []
+            for i in range(5):
+                filename = f"up5k_riscv{i+1}.bin"
+                riscv_times.append(flash_and_time(filename,mem_log))
+
+
+
+            # --- Benchmark Results ---
             print("Benchmark complete.")
-            print(f"Load time: {load_dur} us")
             print(f"BRAM image time: {image1_dur} us")
             print(f"DSP image time: {image2_dur} us")
             print(f"SPRAM image time: {image3_dur} us")
-            print(f"RISC-V image time: {image4_dur} us")
+            print("RISC-V image times (5 runs):")
+            for i, t in enumerate(riscv_times):
+                print(f"  Run {i+1}: {t} us")
+            print()
+            
+            # --- Memory Usage Log ---
+            print("Free memory on pico after each cram flash:")
+            for label, after in mem_log:
+                print(f"{label}: {after}")
 
         elif buffer in {"F", "FLASH"}:
             print("not yet implemented")
