@@ -26,15 +26,11 @@ print("Ready!")
 buffer = ""
 
 #implementation for testing
-@micropython.native
 def flash_and_time(filename, mem_log):
     t0 = time.ticks_us()
-    f = open(filename, "rb")
-    try:
+    with open(filename, "rb") as f:
         fpga.cram(f)
         gc.collect()
-    finally:
-        f.close()
     t1 = time.ticks_us()          
     mem_after = gc.mem_free()
     image_dur = time.ticks_diff(t1,t0)
