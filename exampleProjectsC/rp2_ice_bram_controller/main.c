@@ -65,11 +65,12 @@ int main(void) {
     ice_cram_close();
 
     // reset state machine
-    gpio_init(0);
-    gpio_set_dir(0, GPIO_OUT);
-    gpio_put(0, 0);
-    sleep_ms(5000);
-    gpio_put(0, 1);
+    int pin = 2;
+    gpio_init(pin);
+    gpio_set_dir(pin, GPIO_OUT);
+    gpio_put(pin, 0);
+    sleep_ms(100);
+    gpio_put(pin, 1);
     
     while (true) {
         tud_task();
