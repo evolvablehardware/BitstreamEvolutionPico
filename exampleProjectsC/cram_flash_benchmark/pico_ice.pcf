@@ -1,6 +1,7 @@
 # Reference for PMOD names:
 # https://digilent.com/reference/pmod/start
 
+
 # Signals used by the default firmware
 set_io -nowarn CLK              35
 set_io -nowarn UART_TX          25
