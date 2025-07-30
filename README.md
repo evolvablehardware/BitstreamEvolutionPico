@@ -1,6 +1,14 @@
 # BitstreamEvolutionPico
 Repository for the tools necessary for interfacing with the pico-ice boards for the Evolvable Hardware project
 
+## Requirements before running make
+apt install libusb-1.0-0
+apt install gcc-arm-none-eabi
+
+(Will remove micropython in the future)
+apt install micropython-mpremote
+
+
 ```
 #TODO, Make this into a makefile/cmake? instead of using a clunky/high trust install script
 git clone https://github.com/evolvablehardware/BitstreamEvolutionPico.git
