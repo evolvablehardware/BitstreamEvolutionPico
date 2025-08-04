@@ -34,7 +34,7 @@ set(VERILOG ${CMAKE_CURRENT_LIST_DIR}/top.v)
 add_custom_target(bitstream.h
     DEPENDS ${VERILOG}
     COMMAND yosys -p 'synth_ice40 -abc9 -top top -json bitstream.json' ${VERILOG}
-    COMMAND nextpnr-ice40  --package sg48 --up5k --freq 48 --top top --pcf ${CMAKE_SOURCE_DIR}/pico_ice.pcf --json bitstream.json --asc bitstream.asc
+    COMMAND nextpnr-ice40  --package sg48 --up5k --freq 48 --top top --pcf ${CMAKE_SOURCE_DIR}/pico2_ice.pcf --json bitstream.json --asc bitstream.asc
     COMMAND icepack bitstream.asc bitstream.bin
     COMMAND python3 ${CMAKE_CURRENT_LIST_DIR}/bin2header.py bitstream.bin >bitstream.h
     )

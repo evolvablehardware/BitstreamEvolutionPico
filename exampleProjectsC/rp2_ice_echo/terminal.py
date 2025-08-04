@@ -1,6 +1,6 @@
 from serial import Serial
 
-s = Serial("/dev/ttyACM0", 115200, timeout=2)
+s = Serial("/dev/ttyACM1", 115200, timeout=2)
 
 while True:
     to_send = input("Character to send: ")

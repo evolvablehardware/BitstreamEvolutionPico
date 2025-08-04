@@ -37,8 +37,8 @@
 #include "ice_cram.h"
 #include "ice_led.h"
 
-#define UART_TX_PIN 0
-#define UART_RX_PIN 1
+#define UART_TX_PIN 28
+#define UART_RX_PIN 29
 
 uint8_t bitstream[] = {
 #include "bitstream.h"
