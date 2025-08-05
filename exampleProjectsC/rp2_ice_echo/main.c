@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+ #include <stdio.h>
+
 // pico-sdk
 #include "pico/stdio.h"
 #include "hardware/irq.h"
@@ -37,14 +39,21 @@
 #include "ice_cram.h"
 #include "ice_led.h"
 
-#define UART_TX_PIN 28
-#define UART_RX_PIN 29
+// #define UART_TX_PIN 28
+// #define UART_RX_PIN 29
 
 uint8_t bitstream[] = {
 #include "bitstream.h"
 };
 
 int main(void) {
+    int UART_TX_PIN = 0;
+    int UART_RX_PIN = 1;
+    if (strcmp(PICO_BOARD, "pico2_ice") == 0) {
+        UART_TX_PIN = 28;
+        UART_RX_PIN = 29;
+    }
+
     // Enable the UART
     uart_init(uart0, 115200);
     gpio_set_function(UART_TX_PIN, GPIO_FUNC_UART);
@@ -61,6 +70,17 @@ int main(void) {
     ice_cram_open(FPGA_DATA);
     ice_cram_write(bitstream, sizeof(bitstream));
     ice_cram_close();
+
+    // reset state machine
+    int pin = 3;
+    if (strcmp(PICO_BOARD, "pico2_ice") == 0) {
+        pin = 25;
+    }
+    gpio_init(pin);
+    gpio_set_dir(pin, GPIO_OUT);
+    gpio_put(pin, 0);
+    sleep_ms(100);
+    gpio_put(pin, 1);
     
     while (true) {
         tud_task();
