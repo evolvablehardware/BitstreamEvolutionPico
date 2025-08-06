@@ -38,6 +38,10 @@
 #include "ice_fpga.h"
 #include "ice_led.h"
 
+#ifdef PICO_TIME_DEFAULT_ALARM_POOL_DISABLED
+#undef PICO_TIME_DEFAULT_ALARM_POOL_DISABLED
+#endif
+
 uint8_t bitstream[] = {
 #include "bitstream.h"
 };
@@ -46,17 +50,17 @@ int LED_R = 4;
 int LED_G = 5;
 int LED_B = 6;
 int PURPLE_OUTPUT = 7;
-uint64_t = last_change;
+uint64_t last_change;
 
 void gpio_callback(uint gpio, uint32_t events) {
     uint64_t current_time = time_us_64();
     uint64_t duration = current_time - last_change;
     if (events == GPIO_IRQ_EDGE_RISE) {
-        printf("Purple turned on. Was off for %d microseconds\r\n", duration);
+        printf("Purple turned on. Was off for %llu microseconds\r\n", duration);
     } else if (events == GPIO_IRQ_EDGE_FALL) {
-        printf("Purple turned off. Was on for %d microseconds\r\n", duration);
+        printf("Purple turned off. Was on for %llu microseconds\r\n", duration);
     }
-    last_change = current_time();
+    last_change = current_time;
 }
 
 int main(void) {
