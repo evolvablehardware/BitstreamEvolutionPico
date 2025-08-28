@@ -5,9 +5,6 @@ Repository for the tools necessary for interfacing with the pico-ice boards for 
 apt install libusb-1.0-0
 apt install gcc-arm-none-eabi
 
-(Will remove micropython in the future)
-apt install micropython-mpremote
-
 
 ```
 #TODO, Make this into a makefile/cmake? instead of using a clunky/high trust install script
@@ -26,15 +23,4 @@ cmake -DPICO_SDK_PATH=../../../lib/pico-ice-sdk/lib/pico-sdk ..
 make -j$(nproc)
 
 cd ../../..
-
-cd firmwareMicropython/pico-ice-micropython && git submodule update --init
-
-cd lib/pico-ice-mpy-module 
-rmdir pico-ice-sdk 
-ln -s ../../../../lib/pico-ice-sdk/ pico-ice-sdk && cd ../..
-make -C lib/micropython/mpy-cross -j$(nproc)
-make -C lib/micropython/ports/rp2 submodules
-cd boards/PICO_ICE
-mkdir build
-cd ../../../../
 ```
