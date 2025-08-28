@@ -1,6 +1,6 @@
 [submodule "lib/pico-ice-sdk"]
 	path = lib/pico-ice-sdk
-	url = https://github.com/tinyvision-ai-inc/pico-ice-sdk.git
+	url = https://github.com/tinyvision-ai-inc/pico-ice-sdk
 	branch = main
 
 [submodule "firmwareMicropython/pico-ice-micropython"]
