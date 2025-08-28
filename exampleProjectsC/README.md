@@ -14,7 +14,7 @@ e.g.
 `cmake -D PICO_BOARD=pico2_ice ..`
 5. make the project using all available processors
 `make -j $(nproc)`
-6. Unplug and plug the pico(2)-ice board with the button depressed
+6. Unplug and plug the pico(2)-ice board with the reset button depressed
 7. Open the file manager to the new USB folder
 8. Open a second file manager to the build directory
 9. Drag the create `.u2f` file from the build directory into the USB folder
