@@ -219,7 +219,7 @@ int main(void)
                 green_status = false;
                 red_status = !red_status;
                 ice_led_red(red_status);
-
+                printf("Disconnected from cdc");
             }
             startTime = get_absolute_time();
         }
