@@ -147,7 +147,6 @@ long long checkTotalFlashTime(const uint8_t *bitstream, uint32_t size)
     return absolute_time_diff_us(t1, get_absolute_time());
 }
 
-bool;
 
 // NOT FOR PICO1-ice board
 int main(void)
