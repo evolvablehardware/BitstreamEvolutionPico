@@ -7,7 +7,7 @@ set(PICO_SDK_PATH ${CMAKE_CURRENT_SOURCE_DIR}/pico-sdk/)
 include(pico_sdk_import.cmake)
 
 # configure the pico-sdk project
-project(ice_flash_time_benchmark C CXX ASM)
+project(bitstream_over_usb C CXX ASM)
 pico_sdk_init()
 
 # add the pico-ice-sdk
@@ -30,12 +30,3 @@ pico_add_extra_outputs(${CMAKE_PROJECT_NAME})
 pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 1)
 pico_enable_stdio_uart(${CMAKE_PROJECT_NAME} 0)  # or 1 if you want UART enabled too
 
-set(VERILOG ${CMAKE_CURRENT_LIST_DIR}/top.v)
-add_custom_target(bitstream.h
-    DEPENDS ${VERILOG}
-    COMMAND yosys -p 'synth_ice40 -abc9 -top top -json bitstream.json' ${VERILOG}
-    COMMAND nextpnr-ice40  --package sg48 --up5k --freq 48 --top top --pcf ${CMAKE_SOURCE_DIR}/pico2_ice.pcf --json bitstream.json --asc bitstream.asc
-    COMMAND icepack bitstream.asc bitstream.bin
-    COMMAND python ${CMAKE_CURRENT_LIST_DIR}/bin2header.py bitstream.bin >bitstream.h
-    )
-add_dependencies(${CMAKE_PROJECT_NAME} bitstream.h)

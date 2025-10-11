@@ -44,40 +44,6 @@ uint8_t bitstream[] = {
 static const auto blinkSpeed_hz = 2.;
 static const auto blinkPeriod_us = (long long)((1. / blinkSpeed_hz) * 1'000'000);
 
-// bool led_toggle_timer_callback(goober goober)
-// {
-
-// }
-
-// enum LEDS
-// {
-//     RED_LED,
-//     GREEN_LED,
-//     BLUE_LED,
-//     length
-// };
-
-// bool led_toggle(enum LEDS led)
-// {
-//     static bool redState = false;
-//     static bool greenState = false;
-//     static bool blueState = false;
-
-//     switch (led)
-//     {
-//     case RED_LED:
-//         ice_led_red(redState);
-//         break;
-//     case GREEN_LED:
-//         ice_led_green(greenState);
-//         break;
-//     case BLUE_LED:
-//         ice_led_blue(blueState);
-//         break;
-//     default:
-//         return false;
-//     }
-// }
 
 struct FlashTimePacket
 {
@@ -203,6 +169,7 @@ int main(void)
 
                     printf("Flash time (us) : %lld\r\n", flashDuration_us);
                     tud_cdc_n_write_flush(0);
+                    printf("Size of bitstream: %lu\r\n", sizeof(bitstream));
                     printf("Alternate benchmark, timing data: \r\n"
                            "initTime (us)   : %lld\r\n"
                            "startTime (us)  : %lld\r\n"
