@@ -1,6 +1,5 @@
 #include "flashBenchmark.hpp"
 
-
 FlashTimePacket benchmarkFlashTime(const uint8_t *bitstream, uint32_t size)
 {
     FlashTimePacket flashTimeResults;

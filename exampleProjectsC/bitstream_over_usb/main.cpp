@@ -53,18 +53,17 @@ enum STATES
     UNKNOWN
 };
 
-
 struct MeasurementPacket
 {
     long long measurement1;
     float measurement2;
 } __attribute__((packed)); // Ensure no padding is added by the compiler
 
-
-//returns true if measurement successful
+// returns true if measurement successful
 bool takeMeasurements(MeasurementPacket *measurementPacket)
 {
     // Just a dummy function for now
+    sleep_ms(250); // Simulate measurement time
     measurementPacket->measurement1 = 42;
     measurementPacket->measurement2 = 3.14f;
     return true;
@@ -235,19 +234,24 @@ int main(void)
 
             {
                 char buf[128];
-                FlashTimePacket flashTimes = benchmarkFlashTime(bitstream, Constants::BITSTREAM_LENGTH_BYTES);
-                snprintf(buf,
-                         128,
-                         "FPGA Flash times (us): init %lld, start %lld, open %lld, write %lld, close %lld\r\n",
-                         flashTimes.initTime,
-                         flashTimes.startTime,
-                         flashTimes.openTime,
-                         flashTimes.writeTime,
-                         flashTimes.closeTime);
+                long long flashTime = checkTotalFlashTime(bitstream, Constants::BITSTREAM_LENGTH_BYTES);
+                if (flashTime == -1)
+                {
+                    snprintf(buf,
+                             128,
+                             "Flashing failed.\r\n");
+                }
+                else
+                {
+                    snprintf(buf,
+                             128,
+                             "FPGA Flash time (us): %lld\r\n",
+                             flashTime);
+                }
                 tud_cdc_n_write_str(0, buf);
                 tud_cdc_n_write_flush(0);
             }
-            currentState = IDLE;
+            currentState = TAKE_MEASUREMENTS;
             break;
 
         case TAKE_MEASUREMENTS:
@@ -264,11 +268,21 @@ int main(void)
                 char buf[128];
                 MeasurementPacket measurementPacket;
                 bool success = takeMeasurements(&measurementPacket);
-                snprintf(buf,
-                         128,
-                         "Measurement results: %lld, %f\r\n",
-                         measurementPacket.measurement1,
-                         measurementPacket.measurement2);
+                if (!success)
+                {
+                    snprintf(buf,
+                             128,
+                             "Measurement failed.\r\n");
+                }
+                else
+                {
+                    snprintf(buf,
+                             128,
+                             "Measurement results: %lld, %f\r\n",
+                             measurementPacket.measurement1,
+                             measurementPacket.measurement2);
+                }
+
                 tud_cdc_n_write_str(0, buf);
                 tud_cdc_n_write_flush(0);
             }

@@ -29,6 +29,22 @@ def read_from_device(ser: serial.Serial):
         except OSError:
             break
 
+def write_to_device(ser: serial.Serial, data: bytes):
+    """Write binary data to the Pico in chunks."""
+    last_percent = -1
+    total_len = len(data)
+    for i in range(0, total_len, CHUNK_SIZE):
+        chunk = data[i:i+CHUNK_SIZE]
+        ser.write(chunk)
+        ser.flush()
+        time.sleep(INTER_CHUNK_DELAY)
+        if(SHOW_RX):
+            current_percent = int((i + len(chunk)) * 100 / total_len)
+
+            if current_percent > last_percent:
+                print(f"\rProgress: {current_percent:6.2f}%", end="", flush=True)
+                last_percent = current_percent
+    
 def main():
     if not os.path.exists(FILENAME):
         print(f"Error: file '{FILENAME}' not found.")
@@ -51,15 +67,7 @@ def main():
 
     print("Starting transfer...")
     # Send the file in chunks
-    for i in range(0, data_len, CHUNK_SIZE):
-        chunk = data[i:i+CHUNK_SIZE]
-        ser.write(chunk)
-        ser.flush()
-        time.sleep(INTER_CHUNK_DELAY)
-
-        # optional progress bar
-        progress = (i + len(chunk)) / data_len * 100
-        print(f"\rProgress: {progress:6.2f}%", end="", flush=True)
+    write_to_device(ser, data)
 
     print("\nTransfer complete. Waiting for device response...")
 
