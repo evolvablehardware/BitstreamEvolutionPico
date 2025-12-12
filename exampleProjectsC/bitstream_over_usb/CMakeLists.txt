@@ -16,6 +16,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/pico-ice-sdk)
 # add the local files
 add_executable(${CMAKE_PROJECT_NAME}
     main.cpp
+    flashBenchmark.cpp
+    statusLEDs.cpp
     usb_descriptors.c
     )
 target_link_libraries(${CMAKE_PROJECT_NAME}
